@@ -79,3 +79,119 @@ Write a response in `docs/WINDSURF_TO_DEVIN.md` with:
 - active Studio instance name/id
 - whether QwentyDown place appears loaded
 - any immediate connection or permission errors
+
+## 2026-05-14 20:51 UTC — Export Studio scripts and structure to repository
+
+**Status:** Pending
+**Owner:** Windsurf Agent
+**Scope:** Full Roblox Studio script source export for QwentyDown
+**Relevant docs:** `docs/AGENT_BRIDGE_PROTOCOL.md`, `docs/PROJECT_OVERVIEW.md`, `docs/ARCHITECTURE.md`, `docs/REMOTE_CONTRACTS.md`, `docs/testing.md`
+
+### Task
+
+Export the current QwentyDown Roblox Studio script source and DataModel structure into the GitHub repository so Devin can inspect and edit the real project code.
+
+This is an export/snapshot task. Do not rewrite gameplay logic. Do not make design changes. Do not run broad formatting over existing scripts.
+
+### Inputs
+
+- Active Studio instance from readiness check: `QwentyDown`.
+- Target repository root: `QwentyDown/`.
+- Preferred export root: `QwentyDown/src/`.
+- Documentation outputs:
+  - `QwentyDown/docs/STUDIO_TREE.md`
+  - `QwentyDown/docs/STUDIO_EXPORT_REPORT.md`
+
+### Export structure
+
+Use this mapping for script source files:
+
+| Studio container | Repository path |
+| --- | --- |
+| `ReplicatedStorage` | `src/ReplicatedStorage/` |
+| `ServerScriptService` | `src/ServerScriptService/` |
+| `ServerStorage` | `src/ServerStorage/` |
+| `StarterPlayer` | `src/StarterPlayer/` |
+| `StarterGui` | `src/StarterGui/` |
+| `Workspace` scripts only | `src/Workspace/` |
+
+File extensions:
+
+| Roblox class | Extension |
+| --- | --- |
+| `ModuleScript` | `.lua` |
+| `Script` | `.server.lua` |
+| `LocalScript` | `.client.lua` |
+
+Path naming rules:
+
+- Preserve Studio hierarchy as folders.
+- Use script instance names as file names.
+- If names contain characters that are unsafe for file paths, replace them with `_` and record the original name in `docs/STUDIO_EXPORT_REPORT.md`.
+- If duplicate file paths occur, add a numeric suffix and record the conflict.
+
+### Required MCP checks
+
+Use Roblox Studio MCP tools as available:
+
+- `list_roblox_studios`
+- `set_active_studio`
+- `search_game_tree` or equivalent tree inspection
+- `script_search` / `script_grep` as needed
+- `script_read` for every exported `Script`, `LocalScript`, and `ModuleScript`
+- `console_output` after export, if available
+
+### What to export
+
+Export all source-bearing Roblox scripts under these areas:
+
+- `ReplicatedStorage.Modules`
+- `ReplicatedStorage.Shared`
+- `ReplicatedStorage.Remotes` documentation if scripts/modules exist there
+- `ServerScriptService.Core`
+- `ServerScriptService.Systems`
+- `ServerStorage.Data`
+- `StarterPlayer.StarterPlayerScripts`
+- `StarterPlayer.StarterCharacterScripts`
+- `StarterGui` scripts/controllers if any
+- any `Workspace` scripts that are part of QwentyDown systems
+
+Do not export binary assets, meshes, textures, animations, plugin files, generated cache files, or secrets.
+
+### Documentation to write
+
+Create `docs/STUDIO_TREE.md` with:
+
+- concise DataModel tree for relevant containers
+- class names for each item
+- script paths for exported scripts
+- important non-script folders/models referenced by docs, such as enemy models, VFX, items, remotes and UI roots
+
+Create `docs/STUDIO_EXPORT_REPORT.md` with:
+
+- export timestamp
+- active Studio instance id/name
+- number of scripts exported by class
+- list of exported Studio paths and repository paths
+- list of skipped non-script assets
+- any failed `script_read` calls with reason
+- console warnings/errors observed
+- whether Play Mode was started; default should be no unless required
+
+### Safety rules
+
+- Do not paste Roblox account credentials, cookies, API keys, tokens or private URLs.
+- Do not export plugin internals unless they are part of QwentyDown gameplay code.
+- Do not change Studio gameplay code during this task.
+- If a script contains obvious secrets, do not commit the secret. Write a `Needs User` response instead and identify only the Studio path.
+
+### Done criteria
+
+Commit and push the exported files to `origin/main`, then write a response in `docs/WINDSURF_TO_DEVIN.md` with:
+
+- `Status: Done` if export succeeded, or `Needs User`/`Failed` with reason
+- commit hash
+- number of scripts exported
+- key paths created under `src/`
+- any skipped or failed scripts
+- any console warnings/errors

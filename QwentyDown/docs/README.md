@@ -19,6 +19,7 @@
 - `DEVIN_TO_WINDSURF.md` — команды Devin для локального Windsurf Agent с Roblox Studio MCP.
 - `WINDSURF_TO_DEVIN.md` — ответы Windsurf Agent с результатами Studio/MCP.
 - `DEVIN_CODE_DRAFTS.md` — черновики Luau-кода и patch plans от Devin.
+- `STUDIO_EXPORT_GUIDE.md` — правила экспорта Studio scripts в `src/`.
 
 ## System docs
 
