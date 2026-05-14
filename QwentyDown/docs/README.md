@@ -15,6 +15,10 @@
 - `TESTING_CHECKLIST.md` — чеклисты проверки перед завершением задач.
 - `DECISIONS.md` — журнал архитектурных решений.
 - `RESEARCH_LOG.md` — журнал research-first задач.
+- `AGENT_BRIDGE_PROTOCOL.md` — file-based протокол Devin ↔ Windsurf Agent.
+- `DEVIN_TO_WINDSURF.md` — команды Devin для локального Windsurf Agent с Roblox Studio MCP.
+- `WINDSURF_TO_DEVIN.md` — ответы Windsurf Agent с результатами Studio/MCP.
+- `DEVIN_CODE_DRAFTS.md` — черновики Luau-кода и patch plans от Devin.
 
 ## System docs
 
