@@ -344,3 +344,88 @@ Commit and push to `origin/main`, then report in `QwentyDown/docs/WINDSURF_TO_DE
   - `SkillController`
   - `EnemyService`
   - `EnemyBrain`
+
+## 2026-05-14 21:25 UTC — Export combat support modules for Phase 0
+
+**Status:** Pending
+**Owner:** Windsurf Agent
+**Scope:** Missing support modules required before editing QwentyDown combat runtime
+**Relevant docs:** `docs/COMBAT_AUDIT_ROADMAP.md`, `docs/STUDIO_EXPORT_GUIDE.md`, `docs/AGENT_BRIDGE_PROTOCOL.md`
+
+### Task
+
+Export the missing support modules that `CombatService`, `SkillService`, `CombatController`, and `CombatQuery` require. This is Phase 0 from `COMBAT_AUDIT_ROADMAP.md`.
+
+Do not change gameplay logic. This is an export-only task.
+
+### Required exports
+
+Export these source-bearing instances if present:
+
+#### ReplicatedStorage.Shared
+
+- `Constants`
+- `Types`
+- `Util`
+- `Events`
+
+Target path:
+
+- `src/ReplicatedStorage/Shared/Constants.luau`
+- `src/ReplicatedStorage/Shared/Types.luau`
+- `src/ReplicatedStorage/Shared/Util.luau`
+- `src/ReplicatedStorage/Shared/Events.luau`
+
+#### ReplicatedStorage.Remotes
+
+- `RemoteManager`
+
+Target path:
+
+- `src/ReplicatedStorage/Remotes/RemoteManager.luau`
+
+#### ServerStorage.Data
+
+- `CombatHelpers`
+
+Target path:
+
+- `src/ServerStorage/Data/CombatHelpers.luau`
+
+### Optional exports if nearby and source-bearing
+
+If these modules are quick to export, include them too because future combat work may need them:
+
+- `ReplicatedStorage.Modules.Themes`
+- `ReplicatedStorage.Modules.StatFormula`
+- `ReplicatedStorage.Modules.OriginData`
+- `ServerScriptService.Core.ServiceBase`
+- `ServerScriptService.Core.init`
+
+### Required MCP checks
+
+- Use `script_read` for each required module.
+- If `script_read` truncates a file, use `execute_luau` to read `.Source` directly.
+- Verify each required target path exists in the repository after export.
+- Use `console_output` after export if available.
+
+### Documentation updates
+
+Update the canonical project docs under `QwentyDown/docs/`:
+
+- `QwentyDown/docs/STUDIO_EXPORT_REPORT.md`
+- `QwentyDown/docs/STUDIO_TREE.md`
+- `QwentyDown/docs/WINDSURF_TO_DEVIN.md`
+
+If root-level `docs/STUDIO_EXPORT_REPORT.md`, `docs/STUDIO_TREE.md`, or root `WINDSURF_TO_DEVIN.md` already exist, you may update them too, but `QwentyDown/docs/` is canonical.
+
+### Done criteria
+
+Commit and push to `origin/main`, then write a response block in `QwentyDown/docs/WINDSURF_TO_DEVIN.md` with:
+
+- `Status: Done` if complete, otherwise `Needs User` or `Failed`
+- commit hash
+- required modules exported
+- optional modules exported, if any
+- required modules missing or failed, with reason
+- whether console output had any game-breaking errors
