@@ -50,7 +50,7 @@ Windsurf Agent should read the newest request block first, execute it using the 
 
 ## 2026-05-14 19:50 UTC — Verify bridge readiness
 
-**Status:** Pending
+**Status:** Done
 **Owner:** Windsurf Agent
 **Scope:** Roblox Studio MCP connection and QwentyDown docs
 **Relevant docs:** `docs/AGENT_BRIDGE_PROTOCOL.md`, `docs/testing.md`
