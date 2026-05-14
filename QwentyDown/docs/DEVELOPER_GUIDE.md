@@ -474,6 +474,19 @@ Classes = {
 4. Перед кодом — исследует (workflow `roblox-research-before-code`)
 5. Пишет минимальные изменения, не переписывает файлы целиком
 
+### File bridge с Devin
+
+Если Devin не имеет прямого доступа к локальному Roblox Studio MCP, использовать file-based bridge:
+
+| Файл | Назначение |
+|------|------------|
+| `docs/AGENT_BRIDGE_PROTOCOL.md` | Общий протокол взаимодействия Devin ↔ Windsurf Agent |
+| `docs/DEVIN_TO_WINDSURF.md` | Команды Devin для Windsurf Agent |
+| `docs/WINDSURF_TO_DEVIN.md` | Отчёты Windsurf Agent для Devin |
+| `docs/DEVIN_CODE_DRAFTS.md` | Luau drafts/patch plans от Devin |
+
+Windsurf Agent применяет/проверяет изменения через Roblox Studio MCP и пишет результат обратно в `docs/WINDSURF_TO_DEVIN.md`.
+
 ---
 
 ## 11. Частые задачи
