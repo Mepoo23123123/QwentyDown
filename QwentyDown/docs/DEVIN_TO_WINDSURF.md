@@ -195,3 +195,152 @@ Commit and push the exported files to `origin/main`, then write a response in `d
 - key paths created under `src/`
 - any skipped or failed scripts
 - any console warnings/errors
+
+## 2026-05-14 21:05 UTC — Complete missing Studio script export
+
+**Status:** Pending
+**Owner:** Windsurf Agent
+**Scope:** Complete remaining QwentyDown Studio scripts not exported in commit `9a10e3f`
+**Relevant docs:** `docs/STUDIO_EXPORT_GUIDE.md`, `docs/STUDIO_EXPORT_REPORT.md`, `docs/STUDIO_TREE.md`, `docs/AGENT_BRIDGE_PROTOCOL.md`
+
+### Task
+
+The first export succeeded but only exported 10 modules from `ReplicatedStorage.Modules`. Complete the export by adding all remaining source-bearing QwentyDown `Script`, `LocalScript`, and `ModuleScript` instances to the repository.
+
+Do not change gameplay logic during this task. This is still an export/snapshot task.
+
+### Inputs
+
+Already exported:
+
+- `src/ReplicatedStorage/Modules/AnimationData.luau`
+- `src/ReplicatedStorage/Modules/EXPManager.luau`
+- `src/ReplicatedStorage/Modules/EnemyBrain.luau`
+- `src/ReplicatedStorage/Modules/EnemyConfig.luau`
+- `src/ReplicatedStorage/Modules/InventoryUIBuilder.luau`
+- `src/ReplicatedStorage/Modules/ItemData.luau`
+- `src/ReplicatedStorage/Modules/LootTable.luau`
+- `src/ReplicatedStorage/Modules/QuestData.luau`
+- `src/ReplicatedStorage/Modules/StatsHelper.luau`
+- `src/ReplicatedStorage/Modules/StatsUIBuilder.luau`
+
+Missing high-priority scripts from `docs/STUDIO_TREE.md`:
+
+#### ReplicatedStorage.Modules
+
+- `PlayerProfile`
+- `ClassData`
+- `Themes`
+- `StatFormula`
+- `CombatData`
+- `SkillData`
+- `CombatQuery`
+- `OriginData`
+- `WeaponVFX`
+
+#### ReplicatedStorage.Remotes
+
+- `RemoteManager` if it is a script/module
+
+#### ReplicatedStorage.Shared
+
+- `Types`
+- `Constants`
+- `Util`
+- `Events`
+
+#### ServerScriptService.Systems
+
+- `SkillService`
+- `LootSpawner`
+- `CombatService`
+- `DataService`
+- `LevelService`
+- `LootService`
+- `InventoryService`
+- `StatsService`
+- `EnemyService`
+- `OriginService`
+- `QuestService`
+
+#### ServerScriptService.Core
+
+- `ServiceBase`
+- `init`
+
+#### StarterPlayer.StarterPlayerScripts
+
+- `CombatController`
+- `SkillController`
+- `HUDController`
+- `LootController`
+- `ClassSelectorController`
+- `StatsController`
+- `InventoryController`
+- `VFXTunerController`
+- `OriginMenuController`
+- `QuestController`
+- `init`
+
+#### StarterPlayer.StarterCharacterScripts
+
+- `PlayerAnimations`
+
+#### StarterGui
+
+- export any `Script`, `LocalScript`, or `ModuleScript` under `StarterGui`, including `StatMenuPrototype` if present.
+
+### Required repository paths
+
+Use the same mapping from `docs/STUDIO_EXPORT_GUIDE.md`:
+
+- `ReplicatedStorage` → `src/ReplicatedStorage/`
+- `ServerScriptService` → `src/ServerScriptService/`
+- `ServerStorage` → `src/ServerStorage/`
+- `StarterPlayer` → `src/StarterPlayer/`
+- `StarterGui` → `src/StarterGui/`
+- `Workspace` scripts only → `src/Workspace/`
+
+Use extensions:
+
+- `ModuleScript` → `.luau`
+- `Script` → `.server.luau`
+- `LocalScript` → `.client.luau`
+
+### Required MCP checks
+
+- Use `script_read` for each missing script.
+- If `script_read` truncates a file, use `execute_luau` to read `ModuleScript.Source` / `Script.Source` / `LocalScript.Source`.
+- Use `search_game_tree` or equivalent to verify no source-bearing scripts were missed in the required containers.
+- Use `console_output` after export if available.
+
+### Documentation updates
+
+Update or create these files in the correct project docs folder:
+
+- `QwentyDown/docs/STUDIO_EXPORT_REPORT.md`
+- `QwentyDown/docs/STUDIO_TREE.md`
+- `QwentyDown/docs/WINDSURF_TO_DEVIN.md`
+
+Important: the previous export wrote `docs/STUDIO_EXPORT_REPORT.md` and `docs/STUDIO_TREE.md` at repository root. For consistency, copy/update the final versions under `QwentyDown/docs/`. Root-level copies may remain for now, but `QwentyDown/docs/` is the canonical bridge/docs location.
+
+`QwentyDown/docs/WINDSURF_TO_DEVIN.md` must receive a response block for this request.
+
+### Done criteria
+
+Commit and push to `origin/main`, then report in `QwentyDown/docs/WINDSURF_TO_DEVIN.md`:
+
+- `Status: Done` if complete, otherwise `Needs User` or `Failed`
+- commit hash
+- total scripts exported this round
+- scripts that could not be exported and why
+- whether all required containers were scanned
+- whether combat-critical files were exported:
+  - `CombatService`
+  - `CombatController`
+  - `CombatData`
+  - `CombatQuery`
+  - `SkillService`
+  - `SkillController`
+  - `EnemyService`
+  - `EnemyBrain`
