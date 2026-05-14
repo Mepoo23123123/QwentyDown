@@ -29,6 +29,9 @@ Use these checklists before marking Roblox/Luau tasks complete.
 - Hits are server-authoritative.
 - Damage is not duplicated.
 - VFX/animation does not desync badly from combat result.
+- Dodge i-frames prevent player damage only during the server window.
+- Enemy hits respect dodge i-frames and block state.
+- Invalid `CombatAction` payloads are rejected without side effects.
 
 ## Inventory changes
 

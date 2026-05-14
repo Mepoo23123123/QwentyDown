@@ -62,7 +62,8 @@ end
 -- ═══════════════════════════════════════════
 local Combos: { [Player]: Types.ComboState } = {}
 local Cooldowns: { [Player]: { [string]: number } } = {}
-local Stuns: { [Player]: { untilTime: number, hitType: Types.HitType } } = {}
+local Stuns: { [Player]: { untilTime: number, stunType: Types.StunType } } = {}
+local RuntimeStates: { [Player]: Types.CombatRuntimeState } = {}
 local Blocking: { [Player]: boolean } = {}
 local AttackBuffers: { [Player]: boolean } = {}
 
@@ -89,14 +90,56 @@ local function SetCooldown(p: Player, action: string, duration: number)
 	Cooldowns[p][action] = os.clock() + duration
 end
 
+local function GetRuntimeState(p: Player): Types.CombatRuntimeState
+	local state = RuntimeStates[p]
+	if not state then
+		state = {
+			actionLockUntil = 0,
+			actionLockType = nil,
+			invulnerableUntil = 0,
+			recoveryUntil = 0,
+		}
+		RuntimeStates[p] = state
+	end
+	return state
+end
+
+local function IsActionLocked(p: Player): boolean
+	local state = RuntimeStates[p]
+	return state ~= nil and os.clock() < state.actionLockUntil
+end
+
+local function SetActionLock(p: Player, duration: number, lockType: Types.CombatLockType)
+	local state = GetRuntimeState(p)
+	local now = os.clock()
+	state.actionLockUntil = math.max(state.actionLockUntil, now + duration)
+	state.actionLockType = lockType
+end
+
+local function SetInvulnerable(p: Player, duration: number)
+	local state = GetRuntimeState(p)
+	state.invulnerableUntil = math.max(state.invulnerableUntil, os.clock() + duration)
+end
+
+local function IsInvulnerable(p: Player): boolean
+	local state = RuntimeStates[p]
+	return state ~= nil and os.clock() < state.invulnerableUntil
+end
+
+local function SetRecovery(p: Player, duration: number)
+	local state = GetRuntimeState(p)
+	state.recoveryUntil = math.max(state.recoveryUntil, os.clock() + duration)
+end
+
 local function IsStunned(p: Player): boolean
 	local s = Stuns[p]
 	return s and os.clock() < s.untilTime
 end
 
-local function ApplyStun(p: Player, duration: number, hitType: Types.HitType)
-	Stuns[p] = { untilTime = os.clock() + duration, hitType = hitType }
-	RemoteManager.FireClient(p, "StunApplied", duration, hitType)
+local function ApplyStun(p: Player, duration: number, stunType: Types.StunType)
+	Stuns[p] = { untilTime = os.clock() + duration, stunType = stunType }
+	SetActionLock(p, duration, "stun")
+	RemoteManager.FireClient(p, "StunApplied", duration, stunType)
 end
 
 local function GetHRP(chr: Model?): BasePart?
@@ -121,6 +164,13 @@ local function ProcessHit(attacker: Player, victimPlr: Player?, victimModel: Mod
 	local aHRP = GetHRP(attacker.Character)
 	local vHRP = victimPlr and GetHRP(victimPlr.Character) or (victimModel and victimModel:FindFirstChild("HumanoidRootPart"))
 	if not aHRP or not vHRP then return end
+
+	if victimPlr and IsInvulnerable(victimPlr) then
+		local hitType: Types.HitType = "dodged"
+		RemoteManager.FireClient(attacker, "DamageReceived", 0, hitType, victimPlr.Character)
+		RemoteManager.FireClient(victimPlr, "DamageReceived", 0, hitType, nil)
+		return
+	end
 
 	local victim = victimPlr or victimModel :: Instance
 	local comboIdx = Util.min(comboCount, Constants.COMBO_MAX)
@@ -234,7 +284,7 @@ local function GetWeaponConfig(plr: Player): CombatQuery.WeaponCombatConfig?
 end
 
 local function HandleAttack(plr: Player)
-	if IsStunned(plr) then
+	if IsStunned(plr) or IsActionLocked(plr) then
 		AttackBuffers[plr] = nil
 		return
 	end
@@ -293,7 +343,7 @@ local function HandleAttack(plr: Player)
 end
 
 local function HandleDash(plr: Player)
-	if IsStunned(plr) or IsOnCooldown(plr, "dash") then return end
+	if IsStunned(plr) or IsActionLocked(plr) or IsOnCooldown(plr, "dash") then return end
 	local hrp = GetHRP(plr.Character)
 	if not hrp then return end
 	local hum = plr.Character and plr.Character:FindFirstChildOfClass("Humanoid")
@@ -301,7 +351,10 @@ local function HandleDash(plr: Player)
 
 	SetCooldown(plr, "dash", Constants.DASH_COOLDOWN)
 	local dir = hum.MoveDirection.Magnitude > 0.1 and hum.MoveDirection.Unit or hrp.CFrame.LookVector
-	ApplyStun(plr, Constants.DASH_STUN, "dash_iframe")
+	SetInvulnerable(plr, Constants.DASH_IFRAME_DURATION)
+	SetActionLock(plr, Constants.DASH_ACTION_LOCK, "dash")
+	SetRecovery(plr, Constants.DASH_RECOVERY)
+	RemoteManager.FireClient(plr, "DodgeState", Constants.DASH_IFRAME_DURATION, Constants.DASH_RECOVERY)
 
 	local attachment = Instance.new("Attachment")
 	attachment.Parent = hrp
@@ -316,7 +369,7 @@ local function HandleDash(plr: Player)
 end
 
 local function HandleBlockStart(plr: Player)
-	if IsStunned(plr) then return end
+	if IsStunned(plr) or IsActionLocked(plr) then return end
 	Blocking[plr] = true
 end
 
@@ -350,9 +403,11 @@ end
 
 function CombatService:Start()
 	RemoteManager.CreateEvent("HitVFX")
+	RemoteManager.CreateEvent("DodgeState")
 
 	RemoteManager.OnServerEvent("CombatAction", function(plr: Player, action: Types.CombatActionType)
 		if not RemoteManager.CheckRateLimit(plr, "combat_" .. tostring(action), Constants.RATE_LIMIT_COMBAT) then return end
+		if action ~= "attack" and action ~= "dash" and action ~= "block_start" and action ~= "block_end" then return end
 
 		if action == "attack" then HandleAttack(plr)
 		elseif action == "dash" then HandleDash(plr)
@@ -365,6 +420,7 @@ function CombatService:Start()
 		Combos[p] = nil
 		Cooldowns[p] = nil
 		Stuns[p] = nil
+		RuntimeStates[p] = nil
 		Blocking[p] = nil
 		AttackBuffers[p] = nil
 		RemoteManager.CleanupPlayer(p)
@@ -402,6 +458,31 @@ function CombatService:Start()
 
 	StartRegenLoop()
 	Util.Log("CombatService", "Started")
+end
+
+function CombatService.ApplyEnemyDamageToPlayer(enemyModel: Model, victimPlr: Player, damage: number): number
+	if IsInvulnerable(victimPlr) then
+		local hitType: Types.HitType = "dodged"
+		RemoteManager.FireClient(victimPlr, "DamageReceived", 0, hitType, enemyModel)
+		return 0
+	end
+
+	if Blocking[victimPlr] then
+		local chip = Util.max(Util.floor(damage * 0.05), 1)
+		local StatsService = require(game.ServerScriptService.Systems.StatsService)
+		StatsService.DamageResource(victimPlr, "HP", chip)
+		RemoteManager.FireClient(victimPlr, "DamageReceived", chip, "blocked", enemyModel)
+		return chip
+	end
+
+	local StatsService = require(game.ServerScriptService.Systems.StatsService)
+	StatsService.DamageResource(victimPlr, "HP", damage)
+	RemoteManager.FireClient(victimPlr, "DamageReceived", damage, "hit", enemyModel)
+	return damage
+end
+
+function CombatService.IsPlayerInvulnerable(player: Player): boolean
+	return IsInvulnerable(player)
 end
 
 return CombatService

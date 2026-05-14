@@ -15,10 +15,10 @@ This document tracks RemoteEvents and RemoteFunctions under `ReplicatedStorage.R
 
 - **Direction:** Client -> Server
 - **Payload:** `action: CombatActionType` where `CombatActionType = "attack" | "dash" | "block_start" | "block_end"`
-- **Server validates:** player state, stun check, cooldown, rate limit, combo state, equipped weapon, raycast hit detection.
+- **Server validates:** action string, player state, stun/action lock, cooldown, rate limit, combo state, equipped weapon, server-side hit detection.
 - **Server flow:**
   - `attack`: checks stun → checks cooldown (buffers if on cooldown) → increments combo → raycast → process hit → fire `ComboUpdated`, `DamageReceived`, `HitVFX`.
-  - `dash`: checks stun/cooldown → applies dash force + i-frame stun.
+  - `dash`: checks stun/action lock/cooldown → applies dash force + server-side invulnerability/action-lock/recovery windows.
   - `block_start`/`block_end`: toggles block state.
 
 ### `DamageReceived`
@@ -26,12 +26,19 @@ This document tracks RemoteEvents and RemoteFunctions under `ReplicatedStorage.R
 - **Direction:** Server -> Client
 - **Payload:** `damage: number, hitType: HitType, targetModel: Model?`
 - **Purpose:** notify damage feedback to attacker and victim.
+- **Hit types:** `"hit" | "crit" | "blocked" | "skill" | "knockdown" | "dodged"`.
 
 ### `StunApplied`
 
 - **Direction:** Server -> Client
-- **Payload:** `duration: number, hitType: string`
+- **Payload:** `duration: number, stunType: string`
 - **Purpose:** notify stun feedback/state.
+
+### `DodgeState`
+
+- **Direction:** Server -> Client
+- **Payload:** `iframeDuration: number, recoveryDuration: number`
+- **Purpose:** notify dodge timing feedback. Server remains authoritative for invulnerability.
 
 ### `ComboUpdated`
 
