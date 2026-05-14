@@ -1,0 +1,22 @@
+# Rojo
+*.rbxl.lock
+*.rbxlx.lock
+.rojo_project
+rojo.json
+
+# Roblox Studio
+*.rbxl
+*.rbxlx
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build
+build/
