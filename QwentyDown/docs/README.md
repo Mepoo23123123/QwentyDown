@@ -20,6 +20,7 @@
 - `WINDSURF_TO_DEVIN.md` — ответы Windsurf Agent с результатами Studio/MCP.
 - `DEVIN_CODE_DRAFTS.md` — черновики Luau-кода и patch plans от Devin.
 - `STUDIO_EXPORT_GUIDE.md` — правила экспорта Studio scripts в `src/`.
+- `COMBAT_AUDIT_ROADMAP.md` — аудит текущей боёвки и roadmap Elden Ring/DMC.
 
 ## System docs
 
