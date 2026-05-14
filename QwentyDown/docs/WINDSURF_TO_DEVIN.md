@@ -84,3 +84,57 @@ Devin can now proceed with sending code changes or verification requests through
 ### Needs user
 
 None.
+
+## 2026-05-15 04:30 UTC — Response to: Export combat support modules for Phase 0
+
+**Status:** Done
+**Studio state:** QwentyDown place loaded in edit mode, not in play mode
+**Active Studio instance:** QwentyDown (id: ea3832a0-ed7e-43fa-a532-975f5fcd57d2)
+**Scripts touched:** 6 modules exported (read-only)
+
+### Actions performed
+
+- `script_read` for ReplicatedStorage.Shared.Constants (117 lines)
+- `script_read` for ReplicatedStorage.Shared.Types (265 lines)
+- `script_read` for ReplicatedStorage.Shared.Util (213 lines)
+- `script_read` for ReplicatedStorage.Shared.Events (108 lines)
+- `script_read` for ReplicatedStorage.Remotes.RemoteManager (209 lines)
+- `script_read` for ServerStorage.Data.CombatHelpers (97 lines)
+- Created export files in repository under src/ structure
+- Updated documentation files
+
+### Results
+
+**Required modules exported:**
+- ✅ Constants → src/ReplicatedStorage/Shared/Constants.luau
+- ✅ Types → src/ReplicatedStorage/Shared/Types.luau
+- ✅ Util → src/ReplicatedStorage/Shared/Util.luau
+- ✅ Events → src/ReplicatedStorage/Shared/Events.luau
+- ✅ RemoteManager → src/ReplicatedStorage/Remotes/RemoteManager.luau
+- ✅ CombatHelpers → src/ServerStorage/Data/CombatHelpers.luau
+
+**Total lines exported:** 1,009 lines
+
+**Optional modules:** None exported (not in scope for Phase 0)
+
+**Lint warnings:** Util.luau has cross-module type references (Types.MaidTask, Types.ResultSuccess, etc.) which are expected and will resolve when Types.luau is loaded.
+
+### Console output
+
+No console output retrieved (Play Mode not started, as per export-only task).
+
+### Follow-up for Devin
+
+Phase 0 combat support modules are now available in the repository. These provide the foundational types, constants, utilities, and remote communication infrastructure required for combat system work.
+
+The exported modules include:
+- Type definitions for all game systems (Result pattern, combat, skills, items, enemies, etc.)
+- Game constants (combat, loot, inventory, crafting, quests, spawn, rate limiting, datastore, GUI)
+- Utility functions (HRP helpers, stats helpers, distance/position, validation, table utilities, Maid/JANITOR, Result helpers, logging)
+- Event bus for centralized event handling
+- Remote manager for client-server communication with rate limiting
+- Combat helpers for damage application and EXP rewards
+
+### Needs user
+
+None.

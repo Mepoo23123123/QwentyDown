@@ -55,10 +55,35 @@ Successfully exported 21 files from Roblox Studio across multiple directories.
 
 **Phase 2 Total**: 3,500 lines
 
+### Phase 0: Combat Support Modules (6 files)
+
+#### ReplicatedStorage/Shared (4 modules)
+
+| Module | Lines | Description | Notes |
+|--------|-------|-------------|-------|
+| Constants.luau | 117 | Game constants (combat, loot, inventory, etc.) | - |
+| Types.luau | 265 | Type definitions for all game systems | - |
+| Util.luau | 213 | Utility functions (HRP, stats, distance, validation) | - |
+| Events.luau | 108 | Centralized event bus (Signal pattern) | - |
+
+#### ReplicatedStorage/Remotes (1 module)
+
+| Module | Lines | Description | Notes |
+|--------|-------|-------------|-------|
+| RemoteManager.luau | 209 | Remote event/function manager with rate limiting | - |
+
+#### ServerStorage/Data (1 module)
+
+| Module | Lines | Description | Notes |
+|--------|-------|-------------|-------|
+| CombatHelpers.luau | 97 | Combat utilities (AddEXP, ApplyDamage) | - |
+
+**Phase 0 Total**: 1,009 lines
+
 ## Grand Total
 
-**Total Files Exported**: 21 files  
-**Total Lines**: 6,099 lines of Luau code
+**Total Files Exported**: 27 files  
+**Total Lines**: 7,108 lines of Luau code
 
 ## Issues Encountered
 
@@ -94,10 +119,22 @@ e:/QwentyDown/src/ReplicatedStorage/Modules/
 ├── SkillData.luau
 └── WeaponVFX.luau
 
+e:/QwentyDown/src/ReplicatedStorage/Shared/
+├── Constants.luau
+├── Types.luau
+├── Util.luau
+└── Events.luau
+
+e:/QwentyDown/src/ReplicatedStorage/Remotes/
+└── RemoteManager.luau
+
 e:/QwentyDown/src/ServerScriptService/Systems/
 ├── CombatService.luau
 ├── SkillService.luau
 └── EnemyService.luau
+
+e:/QwentyDown/src/ServerStorage/Data/
+└── CombatHelpers.luau
 
 e:/QwentyDown/src/StarterPlayer/StarterPlayerScripts/Controllers/
 ├── CombatController.luau

@@ -175,4 +175,27 @@ The following modules from `ReplicatedStorage/Modules` have been exported to `sr
 
 **Total**: 21 files exported (6,099 lines of Luau code)
 
+### Phase 0: Combat Support Modules (6 files)
+
+#### ReplicatedStorage/Shared (4 modules)
+
+22. **Constants.luau** - Game constants (combat, loot, inventory, crafting, quests, spawn, rate limiting, datastore, GUI)
+23. **Types.luau** - Type definitions for all game systems (Result pattern, combat, skills, items, enemies, etc.)
+24. **Util.luau** - Utility functions (HRP helpers, stats helpers, distance/position, validation, table utilities, Maid/JANITOR, Result helpers, logging)
+25. **Events.luau** - Centralized event bus (Signal pattern) for game events
+
+#### ReplicatedStorage/Remotes (1 module)
+
+26. **RemoteManager.luau** - Remote event/function manager with rate limiting
+
+#### ServerStorage/Data (1 module)
+
+27. **CombatHelpers.luau** - Combat utilities (AddEXP, ApplyDamage, damage number display)
+
+**Phase 0 Total**: 1,009 lines
+
+## Grand Total
+
+**Total**: 27 files exported (7,108 lines of Luau code)
+
 All exported modules preserve strict Luau typing and typed API exports.
