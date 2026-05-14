@@ -1,14 +1,14 @@
 # Roblox Studio Export Report
 
-**Date**: 2026-05-15  
+**Date**: 2026-05-15 (Updated)  
 **Project**: QwentyDown  
 **Export Method**: Roblox Studio MCP via script_read and execute_luau
 
 ## Export Summary
 
-Successfully exported 10 modules from `ReplicatedStorage/Modules` to `src/ReplicatedStorage/Modules/`.
+Successfully exported 21 files from Roblox Studio across multiple directories.
 
-### Exported Modules
+### Phase 1: ReplicatedStorage/Modules (10 modules)
 
 | Module | Lines | Description | Notes |
 |--------|-------|-------------|-------|
@@ -23,7 +23,42 @@ Successfully exported 10 modules from `ReplicatedStorage/Modules` to `src/Replic
 | EnemyBrain.luau | 423 | Enemy AI state machine | Fixed type qualification |
 | ItemData.luau | 562 | Item database (20+ items) | Retrieved via execute_luau |
 
-**Total Lines Exported**: 2,599 lines
+**Phase 1 Total**: 2,599 lines
+
+### Phase 2: Combat & Skill System (11 files)
+
+#### ServerScriptService/Systems (3 services)
+
+| Module | Lines | Description | Notes |
+|--------|-------|-------------|-------|
+| CombatService.luau | 407 | Server combat logic, damage, combos, cooldowns | - |
+| SkillService.luau | 260 | Server skill execution, buff management | - |
+| EnemyService.luau | 484 | Enemy spawning, AI management, death handling | - |
+
+#### StarterPlayer/StarterPlayerScripts/Controllers (2 controllers)
+
+| Module | Lines | Description | Notes |
+|--------|-------|-------------|-------|
+| CombatController.luau | 496 | Client combat input, combo display, animation | - |
+| SkillController.luau | 505 | Skill input handling, ActionBar UI, VFX triggers | - |
+
+#### ReplicatedStorage/Modules (6 modules)
+
+| Module | Lines | Description | Notes |
+|--------|-------|-------------|-------|
+| CombatData.luau | 75 | Damage formulas, stun types, hit outcomes | - |
+| CombatQuery.luau | 351 | Hit detection (Box/Radius/Ray/Block), debug visuals | - |
+| PlayerProfile.luau | 95 | Player data structure, stat formulas, EXP curves | - |
+| ClassData.luau | 169 | Class definitions, starting stats, skill mappings | - |
+| SkillData.luau | 250 | Skill definitions (12 skills across 4 classes) | - |
+| WeaponVFX.luau | 408 | Weapon trail & VFX management, animation markers | - |
+
+**Phase 2 Total**: 3,500 lines
+
+## Grand Total
+
+**Total Files Exported**: 21 files  
+**Total Lines**: 6,099 lines of Luau code
 
 ## Issues Encountered
 
@@ -51,7 +86,22 @@ e:/QwentyDown/src/ReplicatedStorage/Modules/
 ├── EnemyConfig.luau
 ├── QuestData.luau
 ├── EnemyBrain.luau
-└── ItemData.luau
+├── ItemData.luau
+├── CombatData.luau
+├── CombatQuery.luau
+├── PlayerProfile.luau
+├── ClassData.luau
+├── SkillData.luau
+└── WeaponVFX.luau
+
+e:/QwentyDown/src/ServerScriptService/Systems/
+├── CombatService.luau
+├── SkillService.luau
+└── EnemyService.luau
+
+e:/QwentyDown/src/StarterPlayer/StarterPlayerScripts/Controllers/
+├── CombatController.luau
+└── SkillController.luau
 ```
 
 ## Code Quality
@@ -71,11 +121,12 @@ Based on code analysis:
 
 ## Next Steps
 
-1. Export server-side services from `ServerScriptService/Systems/`
-2. Export client controllers from `StarterPlayer/`
+1. ✅ Export server-side services from `ServerScriptService/Systems/` (Phase 2 complete)
+2. ✅ Export client controllers from `StarterPlayer/` (Phase 2 complete)
 3. Export UI templates from `StarterGui/`
-4. Create comprehensive documentation for exported code
-5. Set up local development environment for offline work
+4. Export remaining ServerScriptService services (StatsService, QuestService, LootSpawner, etc.)
+5. Export remaining ReplicatedStorage modules (Themes, StatFormula, OriginData, etc.)
+6. Set up local development environment for offline work
 
 ## Verification
 

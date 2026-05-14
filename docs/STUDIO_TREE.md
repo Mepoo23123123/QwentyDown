@@ -140,6 +140,7 @@ Game world objects.
 
 ## Exported Modules Summary
 
+### Phase 1: ReplicatedStorage/Modules (10 modules)
 The following modules from `ReplicatedStorage/Modules` have been exported to `src/ReplicatedStorage/Modules/`:
 
 1. **LootTable.luau** - Loot drop configuration
@@ -152,5 +153,26 @@ The following modules from `ReplicatedStorage/Modules` have been exported to `sr
 8. **QuestData.luau** - Quest & NPC definitions
 9. **EnemyBrain.luau** - Enemy AI state machine
 10. **ItemData.luau** - Item database (562 lines, 20+ items)
+
+### Phase 2: Combat & Skill System (11 files)
+
+#### ServerScriptService/Systems (3 services)
+11. **CombatService.luau** - Server combat logic, damage, combos, cooldowns
+12. **SkillService.luau** - Server skill execution, buff management
+13. **EnemyService.luau** - Enemy spawning, AI management, death handling
+
+#### StarterPlayer/StarterPlayerScripts/Controllers (2 controllers)
+14. **CombatController.luau** - Client combat input, combo display, animation
+15. **SkillController.luau** - Skill input handling, ActionBar UI, VFX triggers
+
+#### ReplicatedStorage/Modules (6 modules)
+16. **CombatData.luau** - Damage formulas, stun types, hit outcomes
+17. **CombatQuery.luau** - Hit detection (Box/Radius/Ray/Block), debug visuals
+18. **PlayerProfile.luau** - Player data structure, stat formulas, EXP curves
+19. **ClassData.luau** - Class definitions, starting stats, skill mappings
+20. **SkillData.luau** - Skill definitions (12 skills across 4 classes)
+21. **WeaponVFX.luau** - Weapon trail & VFX management, animation markers
+
+**Total**: 21 files exported (6,099 lines of Luau code)
 
 All exported modules preserve strict Luau typing and typed API exports.
