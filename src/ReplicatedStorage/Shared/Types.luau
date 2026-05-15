@@ -61,12 +61,21 @@ export type PlayerProfile = {
 -- ═══════════════════════════════════════════
 -- COMBAT TYPES
 -- ═══════════════════════════════════════════
-export type HitType = "hit" | "crit" | "blocked" | "skill" | "knockdown"
+export type HitType = "hit" | "crit" | "blocked" | "skill" | "knockdown" | "dodged"
 export type CombatActionType = "attack" | "dash" | "block_start" | "block_end"
+export type CombatLockType = "attack" | "dash" | "block" | "stun"
+export type StunType = "hit" | "critical" | "knockdown" | "dash_recovery"
 
 export type ComboState = {
 	count: number,
 	lastHitTime: number,
+}
+
+export type CombatRuntimeState = {
+	actionLockUntil: number,
+	actionLockType: CombatLockType?,
+	invulnerableUntil: number,
+	recoveryUntil: number,
 }
 
 

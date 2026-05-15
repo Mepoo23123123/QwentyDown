@@ -288,7 +288,8 @@ local function getClosestPlayers(position: Vector3, range: number): { Player }
 end
 
 local function damagePlayer(enemyModel: Model, player: Player, damage: number)
-	StatsService.DamageResource(player, "HP", damage)
+	local CombatService = require(script.Parent.CombatService)
+	local appliedDamage = CombatService.ApplyEnemyDamageToPlayer(enemyModel, player, damage)
 	local snapshot = StatsService.GetSnapshot(player)
 	if snapshot and snapshot.Resources.HP <= 0 then
 		local character = player.Character
@@ -297,7 +298,7 @@ local function damagePlayer(enemyModel: Model, player: Player, damage: number)
 			humanoid.Health = 0
 		end
 	end
-	Util.Log("EnemyService", enemyModel.Name .. " hit " .. player.Name .. " for " .. tostring(damage))
+	Util.Log("EnemyService", enemyModel.Name .. " hit " .. player.Name .. " for " .. tostring(appliedDamage))
 end
 
 local function destroyRecord(record: EnemyRecord)

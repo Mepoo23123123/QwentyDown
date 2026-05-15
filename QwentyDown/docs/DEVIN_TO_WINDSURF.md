@@ -429,3 +429,61 @@ Commit and push to `origin/main`, then write a response block in `QwentyDown/doc
 - optional modules exported, if any
 - required modules missing or failed, with reason
 - whether console output had any game-breaking errors
+
+## 2026-05-14 21:40 UTC — Verify combat-defense-core-v1
+
+**Status:** Pending
+**Owner:** Windsurf Agent
+**Scope:** Phase 1 combat runtime changes from Devin PR
+**Relevant docs:** `docs/COMBAT_AUDIT_ROADMAP.md`, `docs/SYSTEMS/Combat.md`, `docs/REMOTE_CONTRACTS.md`, `docs/TESTING_CHECKLIST.md`
+
+### Task
+
+After Devin's Phase 1 PR is merged, pull `origin/main`, apply/sync the updated repository source into Roblox Studio if your workflow requires it, then verify the new combat-defense core in Studio.
+
+Do not redesign combat yet. This is a verification task for the first defensive foundation.
+
+### Files changed by Devin
+
+- `src/ReplicatedStorage/Shared/Constants.luau`
+- `src/ReplicatedStorage/Shared/Types.luau`
+- `src/ServerScriptService/Systems/CombatService.luau`
+- `src/ServerScriptService/Systems/EnemyService.luau`
+- `QwentyDown/docs/SYSTEMS/Combat.md`
+- `QwentyDown/docs/REMOTE_CONTRACTS.md`
+- `QwentyDown/docs/TESTING_CHECKLIST.md`
+- `QwentyDown/docs/RESEARCH_LOG.md`
+
+### Expected behavior
+
+- `dash` no longer uses stun as fake i-frame state.
+- Server stores separate combat runtime fields for action lock, invulnerability and recovery.
+- Player-vs-player/player combat hits return `"dodged"` with `0` damage while defender is inside dodge i-frame window.
+- Enemy attacks call `CombatService.ApplyEnemyDamageToPlayer`, so enemy hits also respect dodge i-frames and block.
+- `CombatAction` ignores invalid action strings.
+- Existing attack, combo, block and dash input paths still work.
+
+### Required MCP checks
+
+- Use `script_read` or Studio sync verification to confirm changed scripts match repository files.
+- Start Play Mode.
+- Check Studio console for Luau/type/runtime errors on startup.
+- Test basic attack against the dummy/enemy.
+- Test combo progression.
+- Test dash still moves the player.
+- Test an enemy hit during dodge timing: expected `0` damage / `"dodged"` feedback if visible.
+- Test enemy hit outside dodge timing: expected normal damage.
+- Test block: expected reduced chip damage from enemy/player hits while blocking.
+- Stop Play Mode and collect console output.
+
+### Done criteria
+
+Write a response block in `QwentyDown/docs/WINDSURF_TO_DEVIN.md` with:
+
+- `Status: Done`, `Failed`, or `Needs User`
+- commit hash tested
+- Studio scripts checked/applied
+- tests performed and results
+- console errors/warnings
+- any mismatch between repository source and Studio source
+- whether the root `docs/` vs `QwentyDown/docs/` report path issue was encountered again

@@ -26,7 +26,10 @@ Constants.KNOCKDOWN_STUN = 0.6
 -- Dash
 Constants.DASH_COOLDOWN = 3.0
 Constants.DASH_SPEED = 80
-Constants.DASH_STUN = 0.15
+Constants.DASH_IFRAME_DURATION = 0.18
+Constants.DASH_ACTION_LOCK = 0.2
+Constants.DASH_RECOVERY = 0.25
+Constants.DASH_STUN = Constants.DASH_ACTION_LOCK
 
 -- Regen
 Constants.HP_REGEN_INTERVAL = 2

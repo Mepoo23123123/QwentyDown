@@ -20,6 +20,7 @@ Combat is server-authoritative. Client controllers handle input, local animation
 - `DamageReceived`
 - `StunApplied`
 - `ComboUpdated`
+- `DodgeState`
 
 ## Invariants
 
@@ -47,6 +48,9 @@ From `Shared.Constants`:
 | `KNOCKDOWN_STUN` | 0.6s | Stun from knockdown |
 | `DASH_COOLDOWN` | 3.0s | Dash cooldown |
 | `DASH_SPEED` | 80 | Dash speed |
+| `DASH_IFRAME_DURATION` | 0.18s | Server-side dodge invulnerability window |
+| `DASH_ACTION_LOCK` | 0.2s | Dash action lock window |
+| `DASH_RECOVERY` | 0.25s | Dash recovery window |
 
 ## Damage formula
 
@@ -60,9 +64,10 @@ Defense = from Stats
 
 From `Shared.Types`:
 
-- `HitType = "hit" | "crit" | "blocked" | "skill" | "knockdown"`
+- `HitType = "hit" | "crit" | "blocked" | "skill" | "knockdown" | "dodged"`
 - `CombatActionType = "attack" | "dash" | "block_start" | "block_end"`
 - `ComboState = { count: number, lastHitTime: number }`
+- `CombatRuntimeState = { actionLockUntil: number, actionLockType: CombatLockType?, invulnerableUntil: number, recoveryUntil: number }`
 - `DamageOutcome = { knockback: boolean, stun: boolean }`
 
 ## Outcomes table
@@ -74,6 +79,18 @@ From `Shared.Types`:
 | blocked | false | false |
 | knockdown | true | true |
 | skill | false | false |
+| dodged | false | false |
+
+## Dodge / i-frame state
+
+Dash now creates a separate combat runtime state instead of using stun as a fake i-frame flag:
+
+- `invulnerableUntil` blocks player-vs-player and enemy-vs-player damage while active.
+- `actionLockUntil` prevents starting another combat action during the dash action lock.
+- `recoveryUntil` is tracked for later stamina/cancel tuning.
+- Enemy attacks route player damage through `CombatService.ApplyEnemyDamageToPlayer`, so dodge i-frames and block checks apply to enemy hits too.
+
+`DASH_STUN` remains as a compatibility alias for `DASH_ACTION_LOCK`; new code should use `DASH_IFRAME_DURATION`, `DASH_ACTION_LOCK`, and `DASH_RECOVERY`.
 
 ## Related systems
 
